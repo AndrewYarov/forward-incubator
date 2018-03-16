@@ -1,0 +1,6 @@
+Select Count(ID_LOG), Count(distinct V_MESSAGE)
+From fw_process_log
+Where ID_PROCESS=5
+and INSTR(V_MESSAGE,'Ошибкой') > 0
+and DT_TIMESTAMP > TO_DATE('22-02-2018','DD-MM-YYYY')
+and DT_TIMESTAMP < TO_DATE('02-03-2018','DD-MM-YYYY')
