@@ -1,0 +1,4 @@
+Select SID, count(*)
+from fw_process_log
+group by SID
+having count(*) > 1
