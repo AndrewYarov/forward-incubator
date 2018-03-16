@@ -1,0 +1,4 @@
+Select TO_CHAR(DT_TIMESTAMP, 'MONTH'), Count(*)
+From fw_process_log
+Group By TO_CHAR(DT_TIMESTAMP, 'MONTH')
+Order By TO_CHAR(DT_TIMESTAMP, 'MONTH')
