@@ -1,0 +1,3 @@
+Select TO_CHAR(MAX(DT_TIMESTAMP),'DD-MON-YYYY') as Дата, 2520123 as Заказ
+FROM fw_process_log
+WHERE V_MESSAGE LIKE '%2520123%' AND ID_ERROR_CODE < 0
