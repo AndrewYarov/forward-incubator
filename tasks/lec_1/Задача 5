@@ -1,0 +1,3 @@
+Select SUM(CAST(substr(V_MESSAGE,141,10) as int))
+From fw_process_log
+Where N_ACTION = 11
