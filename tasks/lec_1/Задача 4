@@ -1,0 +1,3 @@
+Select count(distinct substr(V_MESSAGE,34,10))
+From fw_process_log
+Where N_ACTION = 12
