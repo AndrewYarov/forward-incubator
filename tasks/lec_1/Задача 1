@@ -1,0 +1,2 @@
+Select COUNT(*) From fw_process_log 
+WHERE V_MESSAGE LIKE '%2520123%' AND ID_ERROR_CODE < 0 
