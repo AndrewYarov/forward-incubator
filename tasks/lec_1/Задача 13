@@ -1,0 +1,5 @@
+Select TO_CHAR(DT_REAL, 'DD.MM.YYYY') as Дата, Count(ID_CONTRACT_FROM) as Количество
+From fw_transfers
+Where ID_CONTRACT_FROM=ID_CONTRACT_TO
+Group BY TO_CHAR(DT_REAL, 'DD.MM.YYYY'), ID_CONTRACT_FROM
+Order By TO_CHAR(DT_REAL, 'DD.MM.YYYY') ASC
