@@ -1,0 +1,4 @@
+Select TO_CHAR(MAX(DT_TIMESTAMP),'DD-MON-YYYY HH24-MI'), SUBSTR(V_MESSAGE,13,12)
+From fw_process_log
+Where ID_USER = 11136
+Group by V_MESSAGE
