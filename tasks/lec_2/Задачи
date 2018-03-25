@@ -1,1 +1,67 @@
+--Задача 1
+--Найти сумму последнего платежа на контракте с лицевым счетом 0102100000088207_MG1
+--Результат: сумма платежа, дата платежа
 
+select v_ext_ident as PersAcc, Summ, PaymentDate
+from fw_contracts,
+(select f_sum as Summ, dt_event as PaymentDate from trans_external
+order by dt_event desc)
+where v_ext_ident='0102100000088207_MG1'
+and rownum = 1
+
+--Задача 2
+--Создать отчет по департаментам контрактов.
+--Выводить только те контракты, которые активны на текущий момент.
+--Результат: номер лицевого счета, дату регистрации контракта, наименование департамента
+--(если у контракта не указан департамент, то выводить null)
+
+?Почему возникает ошибка, если явно указывать ALIAS (AS) во From и в Join'е?
+
+Select v_ext_ident AS Pers_Acc, dt_reg_event AS Date_Reg, NVL(v_name, 'null') AS Name_Of_Dep
+From fw_contracts fw_c
+INNER JOIN fw_departments fw_d ON fw_c.id_department = fw_d.id_department
+Where v_status = 'A'
+
+--Задача 3
+--Найти департаменты, к которым привязано менее 2 контрактов
+--Результат: наименования департаментов.
+
+Select v_name
+From fw_departments,
+(Select Count(id_contract_inst) AS count, id_department
+From fw_contracts
+Group By id_contract_inst, id_department)
+Where count < 3
+
+--Задача 4
+--Создать отчет по платежам за последний месяц в разрезе департаментов
+--Результат: наименование департамента,
+--сумма платежей в этом департаменте за последний месяц,
+--количество платежей в этом департаменте за последний месяц,
+--количество контрактов в этом департаменте.
+
+select nvl(fw_d.v_name, 'null') DepName, sum(trans.f_sum) Summ,
+Count(trans.id_trans) PayCount, Count(fw_c.id_contract_inst) ContrCount
+From fw_contracts fw_c
+inner join fw_departments fw_d on fw_c.id_department=fw_d.ID_DEPARTMENT
+inner join trans_external trans on fw_c.id_contract_inst=trans.id_contract
+where dt_event between '2018-03-01' and '2018-03-31'
+group by nvl(v_name, 'null')
+
+--Задача 5
+--Найти контракты, на которые в 2017 году было совершено более 3 платежей
+--Результат: номер лицевого счета, статус контракта, количество платежей на этом контракте за 2017 году
+
+select fw_c.v_ext_ident, tr.CountPay, fw_c.v_status
+From (fw_contracts fw_c
+Inner join (Select id_contract, count(id_trans) as CountPay
+From trans_external
+Where to_char(dt_event, 'yyyy-mm-dd') like '2017-%-%'
+Group By id_contract) tr on fw_c.id_contract_inst=tr.id_contract)
+Where dt_stop = to_date('01-01-2500', 'dd-mm-yyyy')
+and CountPay > 3
+
+--Задача 6
+--Найти такие контракты, на которых есть хотя бы один платеж в 2017 году
+--Результат: Номер лицевого счета, статус контракта,
+--департамент контракта (если департамент не указан то показать NULL)
