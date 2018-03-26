@@ -65,3 +65,57 @@ and CountPay > 3
 --Найти такие контракты, на которых есть хотя бы один платеж в 2017 году
 --Результат: Номер лицевого счета, статус контракта,
 --департамент контракта (если департамент не указан то показать NULL)
+
+Select v_ext_ident, v_status, v_name
+From (Select fw_c.v_ext_ident, tr.v_status, dep.v_name, count(tr.f_sum) as q
+From (fw_contracts fw_c
+Left join trans_external tr 
+ON fw_c.id_contract_inst=tr.id_contract 
+Left join 
+fw_departments dep 
+on fw_c.id_department=dep.id_department)
+Where TO_CHAR(dt_event,'YYYY')='2017'
+and dt_stop=to_date('01-01-2500','dd-mm-yyyy')
+group by fw_c.id_contract_inst,fw_c.v_ext_ident, tr.v_status, dep.v_name)
+where q > 1
+
+--Задача 7
+--Найти такие департаменты, к которым не привязано ни одного контракта
+--Результат: наименование департаментов
+
+Select dep.v_name
+From fw_departments dep 
+    Left join fw_contracts fw_c 
+    ON dep.id_department=fw_c.id_department
+Where fw_c.id_contract_inst is null
+Order By dep.v_name ASC
+
+--Задача 8
+--Вывести количество платежей на контрактах.
+--Результат: количество платежей, дата последнего платежа,
+--номер лицевого счета контракта, имя пользователя, создавшего платеж
+
+--Задача 9
+--Какой был лицевой счет первого января 2016 у контракта,
+--на который совершили платеж ID_TRANCE = 6397542
+--Результат: номер лицевого счета
+
+Select v_ext_ident
+From fw_contracts fw_c
+    Inner join trans_external tr
+    ON tr.id_contract=fw_c.id_contract_inst
+Where id_trans=6397542 AND dt_start<=to_date('2016-01-01', 'yyyy-mm-dd') AND dt_stop>=to_date('2016-01-01', 'yyyy-mm-dd')
+
+--Задача 10
+--Найти контракты, у которых есть несколько записей со статусом "Расторгнут"
+
+Select id_contract_inst
+From
+    (
+        Select Count(id_contract_inst) as q, id_contract_inst
+        From fw_contracts
+        Where v_status='C'
+        Group By id_contract_inst
+    )
+Where q > 1
+
